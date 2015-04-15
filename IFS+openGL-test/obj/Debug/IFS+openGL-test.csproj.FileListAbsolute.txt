@@ -1,0 +1,9 @@
+D:\prg\C#\IFS+openGL-test\IFS+openGL-test\bin\Debug\IFS+openGL-test.exe.config
+D:\prg\C#\IFS+openGL-test\IFS+openGL-test\obj\Debug\IFS+openGL-test.csprojResolveAssemblyReference.cache
+D:\prg\C#\IFS+openGL-test\IFS+openGL-test\obj\Debug\IFS_openGL_test.Properties.Resources.resources
+D:\prg\C#\IFS+openGL-test\IFS+openGL-test\obj\Debug\IFS+openGL-test.csproj.GenerateResource.Cache
+D:\prg\C#\IFS+openGL-test\IFS+openGL-test\bin\Debug\IFS+openGL-test.exe
+D:\prg\C#\IFS+openGL-test\IFS+openGL-test\bin\Debug\IFS+openGL-test.pdb
+D:\prg\C#\IFS+openGL-test\IFS+openGL-test\bin\Debug\OpenGL.dll
+D:\prg\C#\IFS+openGL-test\IFS+openGL-test\obj\Debug\IFS+openGL-test.exe
+D:\prg\C#\IFS+openGL-test\IFS+openGL-test\obj\Debug\IFS+openGL-test.pdb
