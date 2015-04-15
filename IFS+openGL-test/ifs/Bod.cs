@@ -59,8 +59,24 @@ namespace IFS_openGL_test.ifs
             novy.y = m.matice[1, 0] * this.x + m.matice[1, 1] * this.y + m.matice[1, 2] * this.z + m.dy;
             novy.z = m.matice[2, 0] * this.x + m.matice[2, 1] * this.y + m.matice[2, 2] * this.z + m.dz;
 
+            //novy.setColor(Color.Red);
+            novy.r = Math.Min(Math.Abs(novy.x),1f);
+            novy.g = Math.Min(Math.Abs(novy.y), 1f);
+            novy.b = Math.Min(Math.Abs(novy.z), 1f);
+
             return novy;
         }
 
+        public void setColor(Color barva)
+        {
+            this.r = barva.R / 255f;
+            this.g = barva.G / 255f;
+            this.b = barva.B / 255f;
+        }
+
+        public Color getColor()
+        {
+            return Color.FromArgb(255, (int)(this.r * 255), (int)(this.g * 255), (int)(this.b * 255));
+        }
     }
 }

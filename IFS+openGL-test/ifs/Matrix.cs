@@ -9,12 +9,12 @@ namespace IFS_openGL_test.ifs
     /// <summary>
     /// Třída představuje matici, kterou lze provádět transformace bodů.
     /// </summary>
-    class Matrix
+    public class Matrix
     {
         public float[,] matice;
         public float dx, dy, dz;
 
-        public Matrix(float[,] matice, float dx, float dz, float dy)
+        public Matrix(float[,] matice, float dx, float dy, float dz)
         {
             this.matice = matice;
             this.dx = dx;

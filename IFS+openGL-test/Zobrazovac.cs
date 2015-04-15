@@ -3,6 +3,7 @@ using System.Drawing;
 using Tao.FreeGlut;
 using Tao.OpenGl;
 using IFS_openGL_test.ifs;
+using System.Diagnostics;
 
 namespace IFS_openGL_test
 {
@@ -18,6 +19,9 @@ namespace IFS_openGL_test
         private int width;
         private int height;
 
+        private Stopwatch watch;
+        private static float angle = 0;
+
         //body které se budou vykreslovat
         Bod[] body;
 
@@ -31,6 +35,8 @@ namespace IFS_openGL_test
             inicEvents();
 
             setBody(body);
+
+            watch = Stopwatch.StartNew();
 
             Glut.glutMainLoop();                        //spuštění hlavní zobrazovací smyčky
         }
@@ -60,6 +66,7 @@ namespace IFS_openGL_test
         /// </summary>
         private void inicEvents()
         {
+            Glut.glutIdleFunc(onDisplay);
             Glut.glutDisplayFunc(onDisplay);
         }
 
@@ -68,12 +75,19 @@ namespace IFS_openGL_test
         /// </summary>
         private void onDisplay()
         {
+            watch.Stop();
+            float deltaTime = watch.ElapsedMilliseconds / 250f;
+            watch.Restart();
+
+            angle += deltaTime;
+
             Gl.glClear(Gl.GL_COLOR_BUFFER_BIT | Gl.GL_DEPTH_BUFFER_BIT);
             Gl.glMatrixMode(Gl.GL_MODELVIEW);
             Gl.glLoadIdentity();
             Glu.gluPerspective(45.0, 1, 1, 500);
             Gl.glColor3f(0.5f, 0.5f, 0.5f);
             Gl.glTranslatef(0f, 0f, -5f);
+            Gl.glRotatef(angle, 0, 1f, 0f);
 
             if(body != null)
             {
