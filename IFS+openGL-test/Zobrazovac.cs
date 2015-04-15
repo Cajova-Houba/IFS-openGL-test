@@ -2,6 +2,7 @@
 using System.Drawing;
 using Tao.FreeGlut;
 using Tao.OpenGl;
+using IFS_openGL_test.ifs;
 
 namespace IFS_openGL_test
 {

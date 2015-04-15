@@ -1,4 +1,5 @@
 ﻿using System;
+using IFS_openGL_test.ifs;
 
 namespace IFS_openGL_test
 {
