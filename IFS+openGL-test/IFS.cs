@@ -27,122 +27,12 @@ namespace IFS_openGL_test
             r = new Random();
         }
 
-        private void inicT(int w, int h)
-        {
-            T = new bool[w, h];
-            Random r = new Random();
-
-            //inicializace pole T
-            for (int i = 0; i < T.GetLength(0); i++)
-            {
-                for (int j = 0; j < T.GetLength(1); j++)
-                {
-                    if (r.Next(60) == 3)
-                    {
-                        T[i, j] = true;
-                    }
-                    ////1. a posledni radek
-                    //if (i == 0 || i == T.GetLength(0) - 1)
-                    //{
-                    //    T[i, j] = true;
-                    //}
-
-                    ////1. a poslendi sloupec
-                    //if (j == 0 || j == T.GetLength(1) - 1)
-                    //{
-                    //    T[i, j] = true;
-                    //}
-                }
-            }
-        }
-
         /// <summary>
-        /// Metoda převede dvojrozměrné pole na jednorozměrné pole bodů.
+        /// Metoda náhodně vybere jednu ze třech tranformací a aplikuje ji na zadaný bod.
         /// </summary>
-        /// <param name="pole">Dvojrozměrné pole bool.</param>
-        /// <returns>Výsledné pole bodů.</returns>
-        private Bod[] booltoBod(bool[,] pole)
-        {
-            if (pole == null)
-            {
-                return null;
-            }
-
-            int w = pole.GetLength(0);
-            int h = pole.GetLength(1);
-            float minX = -2f;
-            float maxX = 2f;
-            float minY = -2f;
-            float maxY = 2f;
-
-            List<Bod> res = new List<Bod>();
-
-            for (int i = 0; i < w; i++)
-            {
-                for (int j = 0; j < h; j++)
-                {
-                    if(pole[i,j])
-                    {
-                        //transformace z [0..99,0..99] na [-2..2,-2..2]
-                        float x = (maxX - minX) * i / (float)w + minX;
-                        float y = (maxY - minY) * j / (float)h + minY;
-
-                        res.Add(new Bod(x,y, 0f, Color.Red));
-                    }
-                }
-            }
-
-            return res.ToArray();
-        }
-
-        /// <summary>
-        /// Deterministickým algoritmem vypočítá zadaný počet iterací.
-        /// </summary>
-        /// <param name="iterace">Maximální počet iterací.</param>
-        /// <param name="w">Šířka pole.</param>
-        /// <param name="h">Výška pole</param>
-        /// <returns>Výsledný rastr boolean. Bod platí, pokud je true.</returns>
-        private bool[,] pocitejSierpTroj(int iterace, int w, int h)
-        {
-            inicT(w, h);
-            S = new bool[w, h];
-
-            for (int l = 0; l < iterace; l++)
-            {
-                //vypocet
-                for (int i = 0; i < w; i++)
-                {
-                    for (int j = 0; j < h; j++)
-                    {
-                        if (T[i, j])
-                        {
-                            //vypocet indexu do pole S a nastaveni 1 v S
-                            int[] bod;
-                            for (int k = 0; k < 3; k++)
-                            {
-                                bod = new int[] { (int)(a[k] * i + b[k] * j + e[k]), (int)(c[k] * i + d[k] * j + f[k]) };
-                                if (bod[0] >= 0 && bod[0] < w && bod[1] >= 0 && bod[1] < h)
-                                {
-                                    S[bod[0], bod[1]] = true;
-                                }
-                            }
-                        }
-                    }
-                }
-                T = S;
-                S = new bool[w, h];
-            }
-
-            return T;
-        }
-
-        public Bod[] sierpTrojuhelnik(int iterace, int w, int h)
-        {
-            bool[,] pole = pocitejSierpTroj(iterace, w, h);
-            Bod[] res = booltoBod(pole);
-            return transformujBody(res);
-        }
-
+        /// <param name="bod">Bod, který bude transformován.</param>
+        /// <param name="k">Nepovinné, transformace, tkerá bdue vybrána.</param>
+        /// <returns>Transformovaný bod.</returns>
         private float[] funkce(float[] bod, int k=-1)
         {
             if (k == -1)
@@ -165,6 +55,7 @@ namespace IFS_openGL_test
                                              new float[]{0f,0.3f}
             };
 
+            //počítání jednotlivých iterací
             for (int i = 0; i < iterace; i++)
             {
                 for (int k = 0; k < body.Length; k++)

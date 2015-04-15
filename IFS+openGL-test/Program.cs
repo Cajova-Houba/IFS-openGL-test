@@ -14,7 +14,6 @@ namespace IFS_openGL_test
         {
             Bod[] fraktal;
             IFS ifs = new IFS();
-            //fraktal = ifs.sierpTrojuhelnik(10, 1000, 1000);
             fraktal = ifs.sierpTrojuhelnikNahodne(10000);
             Zobrazovac zobrazovac = new Zobrazovac(1024, 648, fraktal);
         }
