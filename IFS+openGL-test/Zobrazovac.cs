@@ -25,6 +25,18 @@ namespace IFS_openGL_test
         //body které se budou vykreslovat
         Bod[] body;
 
+        //roatece pomocí myši
+        private float angleX = 0f;
+        private float deltaAngleX = 0f;
+        private float deltaAngleXOld = 0f;
+
+        private float angleY = 0f;
+        private float deltaAngleY = 0f;
+        private float deltaAngleYOld = 0f;
+
+        private int xOrigin = -1;
+        private int yOrigin = -1;
+
         public Zobrazovac(int w, int h, Bod[] body)
         {
             this.width = w;
@@ -68,6 +80,8 @@ namespace IFS_openGL_test
         {
             Glut.glutIdleFunc(onDisplay);
             Glut.glutDisplayFunc(onDisplay);
+            Glut.glutMouseFunc(onMouseButton);
+            Glut.glutMotionFunc(onMouseMove);
         }
 
         /// <summary>
@@ -79,15 +93,14 @@ namespace IFS_openGL_test
             float deltaTime = watch.ElapsedMilliseconds / 250f;
             watch.Restart();
 
-            angle += deltaTime;
-
             Gl.glClear(Gl.GL_COLOR_BUFFER_BIT | Gl.GL_DEPTH_BUFFER_BIT);
             Gl.glMatrixMode(Gl.GL_MODELVIEW);
             Gl.glLoadIdentity();
             Glu.gluPerspective(45.0, 1, 1, 500);
             Gl.glColor3f(0.5f, 0.5f, 0.5f);
             Gl.glTranslatef(0f, 0f, -5f);
-            Gl.glRotatef(angle, 0, 1f, 0f);
+            Gl.glRotatef(angleX, 0f, 1f, 0f);
+            Gl.glRotatef(angleY, 1f, 0f, 0f);
 
             if(body != null)
             {
@@ -102,6 +115,63 @@ namespace IFS_openGL_test
 
 
             Glut.glutSwapBuffers();
+        }
+        
+        /// <summary>
+        /// Reakce na stisknutí tlačítka myši.
+        /// </summary>
+        private void onMouseButton(int button, int state, int x, int y)
+        {
+            //pohyb pouze při levém tlačítku myši
+            if (button == Glut.GLUT_LEFT_BUTTON)
+            {
+                //tlačítko je puštěno
+                if (state == Glut.GLUT_UP)
+                {
+                    angleX += deltaAngleX;
+                    angleY += deltaAngleY;
+                    xOrigin = -1;
+                    yOrigin = -1;
+                }
+                else
+                {
+                    //stiskuntí tlačítka myši = počátek pohybu
+                    xOrigin = x;
+                    yOrigin = y;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Reakce na pohyb myší.
+        /// </summary>
+        private void onMouseMove(int x, int y)
+        {
+            //je stisknuto tlačítko
+            if ((xOrigin >=0) && (yOrigin >=0))
+            {
+                deltaAngleXOld = deltaAngleX;
+                deltaAngleYOld = deltaAngleY;
+
+                deltaAngleX = (x - xOrigin) * 0.01f;
+                deltaAngleY = (y - yOrigin) * 0.01f;
+
+                //nutné řešit změnu pohybu
+                if(Math.Abs(deltaAngleX) < Math.Abs(deltaAngleXOld))
+                {
+                    xOrigin = x;
+                }
+                if (Math.Abs(deltaAngleY) < Math.Abs(deltaAngleYOld))
+                {
+                    yOrigin = y;
+                }
+
+                angleX += deltaAngleX;
+                angleY += deltaAngleY;
+
+                Console.WriteLine(String.Format("deltaAngleX:{0:5} deltaAngleY:{1}", deltaAngleX, deltaAngleY));
+                Console.WriteLine(String.Format("angleX:{0:5} angleY:{1}", angleX, angleY));
+            }
         }
 
         public void setBody(Bod[] body)

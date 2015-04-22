@@ -38,13 +38,6 @@ namespace IFS_openGL_test.ifs
                                             {0,0,0.5f}
         }, -0.5f, -0.5f, 0.5f);
 
-        float[] a = new float[] { 0.5f, 0.5f, 0.5f };
-        float[] b = new float[] { 0, 0, 0, 0 };
-        float[] c = new float[] { 0, 0, 0, 0 };
-        float[] d = new float[] { 0.5f, 0.5f, 0.5f };
-        float[] e = new float[] { 0f, 0.5f, 0.5f };
-        float[] f = new float[] { 0f, 0f, 0.5f };
-
         private Random r;
         private bool dbg = false;
         private int pocetTransformaci = 5;
@@ -54,6 +47,34 @@ namespace IFS_openGL_test.ifs
             r = new Random();
         }
 
+        /// <summary>
+        /// Metoda obarví zadané pole bodů podle jejich souřadnic a zadaných rozsahů (minimum na ose = 0, maximum 255).
+        /// </summary>
+        /// <param name="body">Pole bodů k obarvení.</param>
+        /// <param name="rozsahy">Rozsahy ve tvaru [[x_min,x_max] , [y_min,y_max] , [z_min,z_max]].</param>
+        /// <returns>Obarvené body.</returns>
+        private Bod[] obarvi(Bod[] body, float[,] rozsahy)
+        {
+            //souřadnice každého bodu se transformuje na rozsahy [0..1,0..1,0..1]
+            //a takto transformovaná souřadnice se nastaví jako barva x=r,y=g,z=b
+            for (int i = 0; i < body.Length; i++)
+            {
+                float rOld = body[i].x, gOld = body[i].y, bOld = body[i].z;
+                body[i].r = (rOld - rozsahy[0, 0]) / (rozsahy[0, 1] - rozsahy[0, 0]);
+                body[i].g = (gOld - rozsahy[1, 0]) / (rozsahy[1, 1] - rozsahy[1, 0]);
+                body[i].b = (bOld - rozsahy[2, 0]) / (rozsahy[2, 1] - rozsahy[2, 0]);
+            }
+
+            return body;
+        }
+
+        /// <summary>
+        /// Metoda náhodně vybere jednu z transformací a aplikuje ji na zadaný bod který vrátí. Číslo transformace je možné zadat
+        /// jako parametr.
+        /// </summary>
+        /// <param name="bod">Bod k transformaci.</param>
+        /// <param name="k">Nepovinný parametr - číslo transformace.</param>
+        /// <returns>Transformovaný bod.</returns>
         private Bod funkce3D(Bod bod, int k=-1)
         {
             if (k == -1)
@@ -85,6 +106,11 @@ namespace IFS_openGL_test.ifs
             return novy;
         }
 
+        /// <summary>
+        /// Metoda vygeneruje sierpinského trojúhelník v prostoru náhodným algoritmem.
+        /// </summary>
+        /// <param name="iterace">Maximální počet iterací.</param>
+        /// <returns>Pole bodů, které představují sierpinského trojúhelník v prostoru.</returns>
         private Bod[] sierpNahodne3D(int iterace)
         {
             List<Bod> res = new List<Bod>();
@@ -115,6 +141,12 @@ namespace IFS_openGL_test.ifs
 
         }
 
+        /// <summary>
+        /// Metoda nalezne maxima a minima jednotlivých os u zadaného pole bodů. Tyto body transformuje
+        /// na na jiné rozsahy - kvůli zobrazení v openGL okně, zavola metodu pro obarvení a vrátí je.
+        /// </summary>
+        /// <param name="body">Body k transformaci.</param>
+        /// <returns>Přetransformované pole bodů.</returns>
         private Bod[] transformujBody3D(Bod[] body)
         {
             if (body.Length == 0) { return body; }
@@ -164,109 +196,19 @@ namespace IFS_openGL_test.ifs
                 body[i] = new Bod(xn, yn, zn, body[i].getColor());
             }
 
-            return body;
+            return obarvi(body, new float[,] { { xMin, xMax }, { yMin, yMax }, { zMin, zMax }});
         }
 
+        /// <summary>
+        /// Metoda vygeneruje sierpinského trojúhelník v prostoru náhodným algoritmem. Získané body pak přetransformuje na správný rozměr
+        /// a vrátí je.
+        /// </summary>
+        /// <param name="iterace">Maximální počet iterací.</param>
+        /// <returns>Pole bodů představující sierpinského trojúhelník.</returns>
         public Bod[] sierpTrojuhelnikNahodne3D(int iterace)
         {
             Bod[] res = sierpNahodne3D(iterace);
             return transformujBody3D(res);
-        }
-
-        /// <summary>
-        /// Metoda náhodně vybere jednu ze třech tranformací a aplikuje ji na zadaný bod.
-        /// </summary>
-        /// <param name="bod">Bod, který bude transformován.</param>
-        /// <param name="k">Nepovinné, transformace, tkerá bdue vybrána.</param>
-        /// <returns>Transformovaný bod.</returns>
-        private float[] funkce(float[] bod, int k=-1)
-        {
-            if (k == -1)
-            {
-                k = r.Next(3);
-
-            }
-            float xn = (a[k] * bod[0] + b[k] * bod[1] + e[k]);
-            float yn = (c[k] * bod[0] + d[k] * bod[1] + f[k]);
-            return new float[] { xn, yn };
-        }
-
-        private Bod[] sierpNahodne(int iterace)
-        {
-            List<Bod> res = new List<Bod>();
-
-            //body na pocatku
-            float[][] body = new float[][] { new float[]{0f,0f},
-                                             /*new float[]{0.3f,0},
-                                             new float[]{0f,0.3f}*/
-            };
-
-            //počítání jednotlivých iterací
-            for (int i = 0; i < iterace; i++)
-            {
-                for (int k = 0; k < body.Length; k++)
-                {
-                    int p = r.Next(3);
-                    float[] pn = funkce(body[k],p);
-
-                    dbgOut(String.Format("[{2},{3}] -> {4} ->[{0},{1}]", pn[0], pn[0], body[k][0], body[k][1], p));
-                    body[k] = new float[] {pn[0], pn[1]};
-
-                    res.Add(new Bod(pn[0], pn[1], 0f, Color.Red));
-                }
-            }
-
-            return res.ToArray();
-
-        }
-
-        private Bod[] transformujBody(Bod[] puvodni)
-        {
-            float xMin = puvodni[0].x, xMax = puvodni[0].x, yMin = puvodni[0].y, yMax = puvodni[0].y;
-
-            //nalezeni maxima/minima
-            for (int i = 1; i < puvodni.Length; i++)
-            {
-                xMax = Math.Max(puvodni[i].x, xMax);
-                xMin = Math.Min(puvodni[i].x, xMin);
-
-                yMax = Math.Max(puvodni[i].y, yMax);
-                yMin = Math.Min(puvodni[i].y, yMin);
-            }
-
-            //transofrmace na interval [-2..2, -2..2]
-            for (int i = 0; i < puvodni.Length; i++)
-            {
-                float xn, yn;
-                if (xMax == xMin)
-                {
-                    xn = xMax;
-                }
-                else
-                {
-                    xn = (4) * (puvodni[i].x - xMin) / (xMax - xMin) - 2;
-                }
-
-                if (yMax == yMin)
-                {
-                    yn = yMax;
-                }
-                else
-                {
-                    yn = (4) * (puvodni[i].y - yMin) / (yMax - yMin) - 2;
-                }
-                puvodni[i].x = xn;
-                puvodni[i].y = yn;
-                dbgOut(String.Format("[{0},{1}]", xn, yn));
-            }
-
-            return puvodni;
-        }
-
-        public Bod[] sierpTrojuhelnikNahodne(int iterace)
-        {
-            Bod[] res = sierpNahodne(Math.Max(iterace,4));
-            return transformujBody(res);
         }
 
         private void dbgOut(String msg)
