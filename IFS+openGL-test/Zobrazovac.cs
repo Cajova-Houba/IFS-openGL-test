@@ -97,13 +97,33 @@ namespace IFS_openGL_test
             Gl.glMatrixMode(Gl.GL_MODELVIEW);
             Gl.glLoadIdentity();
             Glu.gluPerspective(45.0, 1, 1, 500);
-            Gl.glColor3f(0.5f, 0.5f, 0.5f);
             Gl.glTranslatef(0f, 0f, -5f);
             Gl.glRotatef(angleX, 0f, 1f, 0f);
             Gl.glRotatef(angleY, 1f, 0f, 0f);
 
             if(body != null)
             {
+                //osy
+                Gl.glBegin(Gl.GL_LINES);
+                    //x
+                    Gl.glColor3f(1f, 0f, 0f);
+                    Gl.glVertex3f(0f, 0f, 0f);
+                    Gl.glColor3f(1f, 0f, 0f);
+                    Gl.glVertex3f(1f, 0f, 0f);
+                
+                    //y
+                    Gl.glColor3f(0f, 1f, 0f);
+                    Gl.glVertex3f(0f, 0f, 0f);
+                    Gl.glColor3f(0f, 1f, 0f);
+                    Gl.glVertex3f(0f, 1f, 0f);
+
+                    //z
+                    Gl.glColor3f(0f, 0f, 1f);
+                    Gl.glVertex3f(0f, 0f, 0f);
+                    Gl.glColor3f(0f, 0f, 1f);
+                    Gl.glVertex3f(0f, 0f, 1f);
+                Gl.glEnd();
+
                 Gl.glBegin(Gl.GL_POINTS);
                 for (int i = 0; i < body.Length; i++)
                 {
@@ -160,14 +180,22 @@ namespace IFS_openGL_test
                 if(Math.Abs(deltaAngleX) < Math.Abs(deltaAngleXOld))
                 {
                     xOrigin = x;
+                    angleX -= deltaAngleX;
+                }
+                else
+                {
+                    angleX += deltaAngleX;
                 }
                 if (Math.Abs(deltaAngleY) < Math.Abs(deltaAngleYOld))
                 {
                     yOrigin = y;
+                    angleY -= deltaAngleY;
+                }
+                else
+                {
+                    angleY += deltaAngleY;
                 }
 
-                angleX += deltaAngleX;
-                angleY += deltaAngleY;
 
                 Console.WriteLine(String.Format("deltaAngleX:{0:5} deltaAngleY:{1}", deltaAngleX, deltaAngleY));
                 Console.WriteLine(String.Format("angleX:{0:5} angleY:{1}", angleX, angleY));

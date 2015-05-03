@@ -13,13 +13,15 @@ namespace IFS_openGL_test.ifs
     {
         public float[,] matice;
         public float dx, dy, dz;
+        public double probability;
 
-        public Matrix(float[,] matice, float dx, float dy, float dz)
+        public Matrix(float[,] matice, float dx, float dy, float dz, double probability)
         {
             this.matice = matice;
             this.dx = dx;
             this.dy = dy;
             this.dz = dz;
+            this.probability = probability;
         }
     }
 }

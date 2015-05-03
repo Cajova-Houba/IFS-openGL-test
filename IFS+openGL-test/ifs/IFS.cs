@@ -14,29 +14,29 @@ namespace IFS_openGL_test.ifs
                                             {0.5f,0,0},
                                             {0,0.5f,0},
                                             {0,0,0.5f}
-        }, 0, 0.5f, 0);
+        }, 0, 0.5f, 0, 0.3);
         Matrix m2 = new Matrix(new float[,]{
                                             {0.5f,0,0},
                                             {0,0.5f,0},
                                             {0,0,0.5f}
-        }, 0.5f, -0.5f, -0.5f);
+        }, 0.5f, -0.5f, -0.5f, 0.3);
         Matrix m3 = new Matrix(new float[,]{
                                             {0.5f,0,0},
                                             {0,0.5f,0},
                                             {0,0,0.5f}
-        }, 0.5f, -0.5f, 0.5f);
+        }, 0.5f, -0.5f, 0.5f, 0.3);
 
         Matrix m4 = new Matrix(new float[,]{
                                             {0.5f,0,0},
                                             {0,0.5f,0},
                                             {0,0,0.5f}
-        }, -0.5f, -0.5f, -0.5f);
+        }, -0.5f, -0.5f, -0.5f, 0.3);
 
         Matrix m5 = new Matrix(new float[,]{
                                             {0.5f,0,0},
                                             {0,0.5f,0},
                                             {0,0,0.5f}
-        }, -0.5f, -0.5f, 0.5f);
+        }, -0.5f, -0.5f, 0.5f, 0.3);
 
         private Random r;
         private bool dbg = false;
