@@ -45,7 +45,9 @@ namespace IFS_openGL_test.GUI
             addNewMatrixForm();
             addNewMatrixForm();
         }
-        
+
+        #region přidávání/odebírání MatrixFormů
+
         /// <summary>
         /// Metoda znovurozmístí a přejmenuje matice.
         /// </summary>
@@ -113,6 +115,15 @@ namespace IFS_openGL_test.GUI
             this.Controls.Add(mf);
         }
 
+        private void bPridejMatici_Click(object sender, EventArgs e)
+        {
+            addNewMatrixForm();
+        }
+
+        #endregion
+
+        #region generování IFS
+
         /// <summary>
         /// Metoda projde seznam MatrixFormů a z každého načte matici.
         /// </summary>
@@ -159,9 +170,7 @@ namespace IFS_openGL_test.GUI
             zobrazovac = new Zobrazovac(1024, 648, fraktal);
         }
 
-        private void bPridejMatici_Click(object sender, EventArgs e)
-        {
-            addNewMatrixForm();
-        }
+        #endregion
+
     }
 }

@@ -123,15 +123,97 @@ namespace IFS_openGL_test.GUI
             this.Controls.Add(bDelete);
         }
 
+        #region načítání dat z komponenty
+
+        /// <summary>
+        /// Metoda načte matici 3x3 z pole tbMatice. Pokud dojde k chybě, vrátí null
+        /// </summary>
+        /// <returns>Matice 3x3 nebo null.</returns>
+        private float[,] nactiMatici()
+        {
+            float[,] res = new float[tbMatice.GetLength(0), tbMatice.GetLength(1)];
+
+            for (int i = 0; i < tbMatice.GetLength(0); i++)
+            {
+                for (int j = 0; j < tbMatice.GetLength(1); j++)
+                {
+                    float cislo = 0;
+                    try
+                    {
+                        cislo = (float)Convert.ToDouble(tbMatice[i, j].Text);
+                        res[i, j] = cislo;
+                    }
+                    catch (Exception)
+                    {
+                        return null;
+                    }
+                }
+            }
+
+            return res;
+        }
+
+        /// <summary>
+        /// Metoda načte čísla dx, dy a dz. Pokud dojde k chybě vrátí null.
+        /// </summary>
+        /// <returns>Pole [dx,dy,dz] nebo null.</returns>
+        private float[] nactiDxyz()
+        {
+            float[] res = new float[3];
+
+            try
+            {
+                res[0] = (float)Convert.ToDouble(tbDx.Text);
+                res[1] = (float)Convert.ToDouble(tbDy.Text);
+                res[2] = (float)Convert.ToDouble(tbDz.Text);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+
+            return res;
+        }
+
+        /// <summary>
+        /// Metoda načte pravděpodobnost. Pokud dojde k chybě, vrátí -1.
+        /// </summary>
+        /// <returns>Pravděpodobnost, nebo -1.</returns>
+        private float nactiPravdepodobnost()
+        {
+            float res = 0;
+
+            try
+            {
+                res = (float)Convert.ToDouble(tbProbability.Text);
+            }
+            catch (Exception)
+            {
+                return -1;
+            }
+
+            return res;
+        }
+
         /// <summary>
         /// Metoda vrátí matici zadanou touto komponentou. Pokud dojde k chybě, metoda vrátí null.
         /// </summary>
-        /// <returns>Matice zadaná komponentou.</returns>
+        /// <returns>Matice zadaná komponentou, nebo null.</returns>
         public Matrix getMatrix()
         {
+            float[,] matice = nactiMatici();
+            float[] dxyz = nactiDxyz();
+            float prvd = nactiPravdepodobnost();
 
-            return null;
+            if(matice == null || dxyz == null || prvd == -1)
+            {
+                return null;
+            }
+
+            return new Matrix(matice, dxyz[0], dxyz[1], dxyz[2], prvd);
         }
+
+        #endregion
 
         /// <summary>
         /// Reakce na událost kliknutí na mazací tlačítko. Přes odkaz na rodiče se zavolá metoda delete a objekt se zničí.
