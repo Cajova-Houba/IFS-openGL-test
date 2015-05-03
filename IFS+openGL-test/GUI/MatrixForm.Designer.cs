@@ -28,22 +28,14 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.gbForm = new System.Windows.Forms.GroupBox();
-            // 
-            // gbForm
-            // 
-            this.gbForm.Location = new System.Drawing.Point(0, 0);
-            this.gbForm.Name = "gbForm";
-            this.gbForm.Size = new System.Drawing.Size(200, 100);
-            this.gbForm.TabIndex = 0;
-            this.gbForm.TabStop = false;
-            this.gbForm.Text = "groupBox1";
+            this.SuspendLayout();
+            this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.GroupBox gbForm;
+
 
     }
 }
