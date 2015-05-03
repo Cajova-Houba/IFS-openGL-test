@@ -28,8 +28,8 @@ namespace IFS_openGL_test.GUI
         //počet matic ve sloupci do kterého se právě umisťuje
         private int pocetMatic = 0;
 
-        //defaultní nadpis komponenty
-        private String defJmeno = "Matice";
+        //defaultní text MatrixFormu
+        private String defText = "Matice";
 
         //odsazení mezi maticemi
         private int mezeraVelka = 10;
@@ -51,16 +51,29 @@ namespace IFS_openGL_test.GUI
         /// </summary>
         private void aktualizujMatice()
         {
-            //matice ve sloupci a sloupec
-            int m = 0; int s = 0;
-            foreach(MatrixForm m in matrixForms)
+            //matice ve sloupci, sloupec, poradove cislo
+            int m = 0, s = 0, i = 1 ;
+            foreach(MatrixForm mf in matrixForms)
             {
-
+                mf.Location = new Point(mezeraVelka + s * (MatrixForm.w + mezeraMala), mezeraVelka + m * (MatrixForm.h + mezeraMala));
+                mf.Text = defText+" "+i;
+                m++;
+                i++;
+                if(m == MAX_POCET_MATIC_SLOUPEC)
+                {
+                    m = 0;
+                    s++;
+                }
             }
+
+            //aktualizování řídíc proměnných
+            pocetMatic = m;
+            sloupec = s;
         }
 
         /// <summary>
-        /// Metoda vymaže zadanou komponentu ze seznamu. Pak zavolá metody na znovurozmístění
+        /// Metoda vymaže zadanou komponentu ze seznamu. Pak zavolá metody na znovurozmístění.
+        /// Tuto metodu bude volat MatrixForm po kliknutí na smazání.
         /// a přejmenování stávajících metod.
         /// </summary>
         /// <param name="mf">Komponenta ke smazání</param>
@@ -72,7 +85,8 @@ namespace IFS_openGL_test.GUI
                 return;
             }
 
-
+            matrixForms.Remove(mf);
+            aktualizujMatice();
         }
 
         /// <summary>
@@ -86,7 +100,7 @@ namespace IFS_openGL_test.GUI
                 return;
             }
 
-            MatrixForm mf = new MatrixForm(this, defJmeno + " " + (matrixForms.Count + 1));
+            MatrixForm mf = new MatrixForm(this, defText + " " + (matrixForms.Count + 1));
             mf.Location = new Point(mezeraVelka + sloupec*(MatrixForm.w+mezeraMala), mezeraVelka+pocetMatic*(MatrixForm.h+mezeraMala));
             pocetMatic++;
             if(pocetMatic == MAX_POCET_MATIC_SLOUPEC)

@@ -119,6 +119,7 @@ namespace IFS_openGL_test.GUI
             bDelete = new Button();
             bDelete.Text = "X";
             bDelete.SetBounds(w - mezeraVelka - delBtnW, h - mezeraVelka - delBtnH, delBtnW, delBtnH);
+            bDelete.Click += bDelete_Click;
             this.Controls.Add(bDelete);
         }
 
@@ -130,6 +131,17 @@ namespace IFS_openGL_test.GUI
         {
 
             return null;
+        }
+
+        /// <summary>
+        /// Reakce na událost kliknutí na mazací tlačítko. Přes odkaz na rodiče se zavolá metoda delete a objekt se zničí.
+        /// </summary>
+        /// <param name="sender">Objekt který na událost reaguje</param>
+        /// <param name="e">Argumenty událost.</param>
+        private void bDelete_Click(object sender, EventArgs e)
+        {
+            rodic.deleteMatrix(this);
+            this.Dispose();
         }
     }
 }
