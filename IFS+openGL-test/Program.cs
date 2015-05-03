@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Windows.Forms;
 using IFS_openGL_test.ifs;
+using IFS_openGL_test.GUI;
 
 namespace IFS_openGL_test
 {
@@ -13,11 +15,9 @@ namespace IFS_openGL_test
         [STAThread]
         static void Main()
         {
-            Bod[] fraktal;
-            IFS ifs = new IFS();
-            //fraktal = ifs.sierpTrojuhelnikNahodne(10);
-            fraktal = ifs.sierpTrojuhelnikNahodne3D(150000);
-            Zobrazovac zobrazovac = new Zobrazovac(1024, 648, fraktal);
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.Run(new Okno());
         }
     }
 }
