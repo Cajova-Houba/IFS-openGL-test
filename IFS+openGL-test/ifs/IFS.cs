@@ -56,6 +56,10 @@ namespace IFS_openGL_test.ifs
                 transformace.Add(m4);
                 transformace.Add(m5);
             }
+            else
+            {
+                transformace = matice;
+            }
         }
 
         /// <summary>

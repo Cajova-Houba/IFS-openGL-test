@@ -165,7 +165,7 @@ namespace IFS_openGL_test.GUI
             if (matice.Count == 0) { return; }
 
             Bod[] fraktal;
-            IFS ifs = new IFS();
+            IFS ifs = new IFS(matice);
             fraktal = ifs.sierpTrojuhelnikNahodne3D(150000);
             zobrazovac = new Zobrazovac(1024, 648, fraktal);
         }

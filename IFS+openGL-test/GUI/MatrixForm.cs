@@ -88,18 +88,25 @@ namespace IFS_openGL_test.GUI
             {
                 for (int j = 0; j < tbMatice.GetLength(1); j++)
                 {
-                    tbMatice[i, j] = createTextBox("0");
+                    if(i == j)
+                    {
+                        tbMatice[i, j] = createTextBox("0,5");
+                    }
+                    else
+                    {
+                        tbMatice[i, j] = createTextBox("0");
+                    }
                     tbMatice[i, j].SetBounds(i * (tbW+mezeraMala) + mezeraVelka, j * (tbH+mezeraMala) + 2*mezeraVelka, tbW, tbH);
                     this.Controls.Add(tbMatice[i, j]);
                 }
             }
 
             //zadávání dx,dy,dz
-            tbDx = createTextBox("dx");
+            tbDx = createTextBox("0,5");
             tbDx.SetBounds(mezeraVelka + 3 * (tbW + mezeraMala) + mezeraVelka, 2*mezeraVelka, tbW, tbH);
-            tbDy = createTextBox("dy");
+            tbDy = createTextBox("0,5");
             tbDy.SetBounds(mezeraVelka + 3 * (tbW + mezeraMala) + mezeraVelka, 2*mezeraVelka + tbH + mezeraMala, tbW, tbH);
-            tbDz = createTextBox("dz");
+            tbDz = createTextBox("0,5");
             tbDz.SetBounds(mezeraVelka + 3 * (tbW + mezeraMala) + mezeraVelka, 2*mezeraVelka + 2*(tbH + mezeraMala), tbW, tbH);
             this.Controls.Add(tbDx);
             this.Controls.Add(tbDy);
@@ -110,7 +117,7 @@ namespace IFS_openGL_test.GUI
             pl.Text = "Pravděpodobnost:";
             pl.Location = new Point(mezeraVelka,h-mezeraVelka-delBtnH-tbH);
             tbProbability = new TextBox();
-            tbProbability.Text = "1";
+            tbProbability.Text = "0,2";
             tbProbability.SetBounds(pl.Location.X + pl.Width, pl.Location.Y-3, 2*tbW, tbH);
             this.Controls.Add(pl);
             this.Controls.Add(tbProbability);
