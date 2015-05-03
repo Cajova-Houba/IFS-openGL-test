@@ -14,30 +14,32 @@ namespace IFS_openGL_test.ifs
                                             {0.5f,0,0},
                                             {0,0.5f,0},
                                             {0,0,0.5f}
-        }, 0, 0.5f, 0, 0.3);
+        }, 0, 0.5f, 0, 0.2);
         Matrix m2 = new Matrix(new float[,]{
                                             {0.5f,0,0},
                                             {0,0.5f,0},
                                             {0,0,0.5f}
-        }, 0.5f, -0.5f, -0.5f, 0.3);
+        }, 0.5f, -0.5f, -0.5f, 0.2);
         Matrix m3 = new Matrix(new float[,]{
                                             {0.5f,0,0},
                                             {0,0.5f,0},
                                             {0,0,0.5f}
-        }, 0.5f, -0.5f, 0.5f, 0.3);
+        }, 0.5f, -0.5f, 0.5f, 0.2);
 
         Matrix m4 = new Matrix(new float[,]{
                                             {0.5f,0,0},
                                             {0,0.5f,0},
                                             {0,0,0.5f}
-        }, -0.5f, -0.5f, -0.5f, 0.3);
+        }, -0.5f, -0.5f, -0.5f, 0.2);
 
         Matrix m5 = new Matrix(new float[,]{
                                             {0.5f,0,0},
                                             {0,0.5f,0},
                                             {0,0,0.5f}
-        }, -0.5f, -0.5f, 0.5f, 0.3);
+        }, -0.5f, -0.5f, 0.5f, 0.2);
 
+        //seznam používaných transformací
+        private List<Matrix> transformace;
         private Random r;
         private bool dbg = false;
         private int pocetTransformaci = 5;
@@ -45,6 +47,12 @@ namespace IFS_openGL_test.ifs
         public IFS()
         {
             r = new Random();
+            transformace = new List<Matrix>();
+            transformace.Add(m1);
+            transformace.Add(m2);
+            transformace.Add(m3);
+            transformace.Add(m4);
+            transformace.Add(m5);
         }
 
         /// <summary>
@@ -69,6 +77,32 @@ namespace IFS_openGL_test.ifs
         }
 
         /// <summary>
+        /// Metoda vybere jednu ze seznamu transformací podle jejich pravděpodobností.
+        /// Musí platit, že součet pravděpodobností transformací je 1.
+        /// </summary>
+        /// <returns>Transformace</returns>
+        private Matrix vyberTransformaci()
+        {
+            //kontrola vstupu
+            if (transformace == null) { return null; }
+            if (transformace.Count == 0) { return null; }
+
+            double tmp = 0;
+            double rnd = r.NextDouble();
+            foreach(Matrix m in transformace)
+            {
+                if (m.probability > 0)
+                {
+                    tmp += m.probability;
+                    if (tmp < rnd) { return m; }
+                }
+            }
+
+            //pokud kód došel sem a nic nevrátil, znamená to chybu v praděpodobnostech matic
+            return null;
+        }
+
+        /// <summary>
         /// Metoda náhodně vybere jednu z transformací a aplikuje ji na zadaný bod který vrátí. Číslo transformace je možné zadat
         /// jako parametr.
         /// </summary>
@@ -77,31 +111,36 @@ namespace IFS_openGL_test.ifs
         /// <returns>Transformovaný bod.</returns>
         private Bod funkce3D(Bod bod, int k=-1)
         {
+            Bod novy = bod;
             if (k == -1)
             {
-                k = r.Next(3);
+                novy = bod.vynasob(vyberTransformaci());
             }
-
-            Bod novy = bod;
-
-            switch(k)
+            else
             {
-                case 0:
-                    novy = bod.vynasob(m1);
-                    break;
-                case 1:
-                    novy = bod.vynasob(m2);
-                    break;
-                case 2:
-                    novy = bod.vynasob(m3);
-                    break;
-                case 3:
-                    novy = bod.vynasob(m4);
-                    break;
-                case 4:
-                    novy = bod.vynasob(m5);
-                    break;
+                if( k < transformace.Count )
+                {
+                    novy = bod.vynasob(transformace.ElementAt(k));
+                }
             }
+            //switch(k)
+            //{
+            //    case 0:
+            //        novy = bod.vynasob(m1);
+            //        break;
+            //    case 1:
+            //        novy = bod.vynasob(m2);
+            //        break;
+            //    case 2:
+            //        novy = bod.vynasob(m3);
+            //        break;
+            //    case 3:
+            //        novy = bod.vynasob(m4);
+            //        break;
+            //    case 4:
+            //        novy = bod.vynasob(m5);
+            //        break;
+            //}
 
             return novy;
         }
