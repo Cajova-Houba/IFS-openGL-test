@@ -44,15 +44,18 @@ namespace IFS_openGL_test.ifs
         private bool dbg = false;
         private int pocetTransformaci = 5;
 
-        public IFS()
+        public IFS(List<Matrix> matice=null)
         {
             r = new Random();
             transformace = new List<Matrix>();
-            transformace.Add(m1);
-            transformace.Add(m2);
-            transformace.Add(m3);
-            transformace.Add(m4);
-            transformace.Add(m5);
+            if(matice == null)
+            {
+                transformace.Add(m1);
+                transformace.Add(m2);
+                transformace.Add(m3);
+                transformace.Add(m4);
+                transformace.Add(m5);
+            }
         }
 
         /// <summary>
