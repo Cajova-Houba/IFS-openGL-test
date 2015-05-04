@@ -17,10 +17,10 @@ namespace IFS_openGL_test.GUI
         private Zobrazovac zobrazovac;
 
         //maximální počet sloupců s maticemi
-        private const int MAX_POCET_SLOUPCU_MATIC = 2;
+        private const int MAX_POCET_SLOUPCU_MATIC = 3;
 
         //maximální počet matic ve sloupci
-        private const int MAX_POCET_MATIC_SLOUPEC = 5;
+        private const int MAX_POCET_MATIC_SLOUPEC = 3;
 
         //sloupec do kterého se nové matice umisťují
         private int sloupec = 0;
@@ -41,6 +41,7 @@ namespace IFS_openGL_test.GUI
         public Okno()
         {
             InitializeComponent();
+            this.Text = "Zadání IFS";
             matrixForms = new List<MatrixForm>();
             addNewMatrixForm();
             addNewMatrixForm();
@@ -152,7 +153,7 @@ namespace IFS_openGL_test.GUI
             String chyby = sbChyby.ToString();
             if(chyby.Length != 0)
             {
-                MessageBox.Show(ch + chyby);
+                MessageBox.Show(ch+chyby, "Chyba", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
 
             return res;
@@ -163,6 +164,19 @@ namespace IFS_openGL_test.GUI
             //nacteni matic
             List<Matrix> matice = nactiMatice();
             if (matice.Count == 0) { return; }
+
+            //kontrola součtu pravděpodobností
+            double prd = 0;
+            double chyba = 0.00001;
+            foreach(Matrix m in matice)
+            {
+                prd += m.probability;
+            }
+            if(Math.Abs(prd - 1) > chyba)
+            {
+                MessageBox.Show("Součet pravděpodobností transformací není  1.","Chyba",MessageBoxButtons.OK,MessageBoxIcon.Error);
+                return;
+            }
 
             Bod[] fraktal;
             IFS ifs = new IFS(matice);

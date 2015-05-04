@@ -70,6 +70,8 @@ namespace IFS_openGL_test
             Glut.glutInit();                                                                //inicializace GLUT
             Glut.glutInitDisplayMode(Glut.GLUT_DOUBLE | Glut.GLUT_DEPTH | Glut.GLUT_RGB);   //double buffering
             Glut.glutInitWindowSize(width, height);                                         //rozmery okna
+            Glut.glutCloseFunc(onClose);
+            Glut.glutSetOption(Glut.GLUT_ACTION_ON_WINDOW_CLOSE, Glut.GLUT_ACTION_GLUTMAINLOOP_RETURNS);
             winHandler = Glut.glutCreateWindow("IFS-OpenGL test");                          //vytvornei okna
         }
 
@@ -82,6 +84,14 @@ namespace IFS_openGL_test
             Glut.glutDisplayFunc(onDisplay);
             Glut.glutMouseFunc(onMouseButton);
             Glut.glutMotionFunc(onMouseMove);
+        }
+
+        /// <summary>
+        /// Reakce na zavření okna.
+        /// </summary>
+        private void onClose()
+        {
+            Glut.glutHideWindow();
         }
 
         /// <summary>

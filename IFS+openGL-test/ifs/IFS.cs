@@ -75,9 +75,12 @@ namespace IFS_openGL_test.ifs
             for (int i = 0; i < body.Length; i++)
             {
                 float rOld = body[i].x, gOld = body[i].y, bOld = body[i].z;
-                body[i].r = (rOld - rozsahy[0, 0]) / (rozsahy[0, 1] - rozsahy[0, 0]);
-                body[i].g = (gOld - rozsahy[1, 0]) / (rozsahy[1, 1] - rozsahy[1, 0]);
-                body[i].b = (bOld - rozsahy[2, 0]) / (rozsahy[2, 1] - rozsahy[2, 0]);
+                //body[i].r = (rOld - rozsahy[0, 0]) / (rozsahy[0, 1] - rozsahy[0, 0]);
+                //body[i].g = (gOld - rozsahy[1, 0]) / (rozsahy[1, 1] - rozsahy[1, 0]);
+                //body[i].b = (bOld - rozsahy[2, 0]) / (rozsahy[2, 1] - rozsahy[2, 0]);
+                body[i].r = 1f;
+                body[i].g = 0;
+                body[i].b = 0;
             }
 
             return body;
