@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,13 +16,17 @@ namespace IFS_openGL_test.ifs
         public float dx, dy, dz;
         public double probability;
 
-        public Matrix(float[,] matice, float dx, float dy, float dz, double probability)
+        //barva kterou budou obraveny body na které byla tato transformace aplikována
+        public Color barva;
+
+        public Matrix(float[,] matice, float dx, float dy, float dz, double probability, Color barva)
         {
             this.matice = matice;
             this.dx = dx;
             this.dy = dy;
             this.dz = dz;
             this.probability = probability;
+            this.barva = barva;
         }
     }
 }

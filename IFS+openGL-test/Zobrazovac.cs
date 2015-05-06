@@ -190,7 +190,7 @@ namespace IFS_openGL_test
                 if(Math.Abs(deltaAngleX) < Math.Abs(deltaAngleXOld))
                 {
                     xOrigin = x;
-                    angleX -= deltaAngleX;
+                    angleX -= deltaAngleX;  
                 }
                 else
                 {
@@ -207,8 +207,8 @@ namespace IFS_openGL_test
                 }
 
 
-                Console.WriteLine(String.Format("deltaAngleX:{0:5} deltaAngleY:{1}", deltaAngleX, deltaAngleY));
-                Console.WriteLine(String.Format("angleX:{0:5} angleY:{1}", angleX, angleY));
+                //Console.WriteLine(String.Format("deltaAngleX:{0:5} deltaAngleY:{1}", deltaAngleX, deltaAngleY));
+                //Console.WriteLine(String.Format("angleX:{0:5} angleY:{1}", angleX, angleY));
             }
         }
 

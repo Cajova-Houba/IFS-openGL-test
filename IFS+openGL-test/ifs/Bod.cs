@@ -25,9 +25,9 @@ namespace IFS_openGL_test.ifs
             this.y = 0f;
             this.z = 0f;
 
-            this.r = 0f;
-            this.g = 0f;
-            this.b = 0f;
+            this.r = 1f;
+            this.g = 1f;
+            this.b = 1f;
         }
 
         public Bod(float x, float y, float z, Color c)
@@ -59,10 +59,12 @@ namespace IFS_openGL_test.ifs
             novy.y = m.matice[1, 0] * this.x + m.matice[1, 1] * this.y + m.matice[1, 2] * this.z + m.dy;
             novy.z = m.matice[2, 0] * this.x + m.matice[2, 1] * this.y + m.matice[2, 2] * this.z + m.dz;
 
+            novy.setColor(m.barva);
+
             //novy.setColor(Color.Red);
-            novy.r = Math.Min(Math.Abs(novy.x),1f);
-            novy.g = Math.Min(Math.Abs(novy.y), 1f);
-            novy.b = Math.Min(Math.Abs(novy.z), 1f);
+            //novy.r = Math.Min(Math.Abs(novy.x),1f);
+            //novy.g = Math.Min(Math.Abs(novy.y), 1f);
+            //novy.b = Math.Min(Math.Abs(novy.z), 1f);
 
             return novy;
         }
@@ -76,6 +78,7 @@ namespace IFS_openGL_test.ifs
 
         public Color getColor()
         {
+
             return Color.FromArgb(255, (int)(this.r * 255), (int)(this.g * 255), (int)(this.b * 255));
         }
     }

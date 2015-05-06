@@ -20,6 +20,14 @@ namespace IFS_openGL_test.GUI
         TextBox tbDz;
         TextBox tbProbability;
 
+        //color dialog pro výběr barvy transformace
+        ColorDialog cdBarva;
+        
+        //button pro zobrazení vybrané barvy
+        //bude mít stejné rozměry jako delete button
+        Color barva = Color.Black;  
+        Button bVyberBarvy;
+
         //button pro smazání komponenty
         Button bDelete;
 
@@ -43,13 +51,40 @@ namespace IFS_openGL_test.GUI
         //odkaz na rodiče kvůli mazání
         Okno rodic;
 
-        public MatrixForm(Okno rodic, String caption)
+        public MatrixForm(Okno rodic, String caption, Color barva)
         {
             InitializeComponent();
             this.Size = new System.Drawing.Size(w,h);
             this.Text = caption;
             this.rodic = rodic;
+            this.barva = barva;
             inic();
+        }
+
+        public MatrixForm(Okno rodic, String caption, Matrix matrix)
+        {
+            InitializeComponent();
+            this.Size = new System.Drawing.Size(w, h);
+            this.Text = caption;
+            this.rodic = rodic;
+            this.barva = matrix.barva;
+            inic();
+
+            //nastavení hodnot podle zadané matice
+            for (int i = 0; i < matrix.matice.GetLength(0); i++)
+            {
+                for (int j = 0; j < matrix.matice.GetLength(1); j++)
+                {
+                    tbMatice[i, j].Text = matrix.matice[i, j].ToString();
+                }
+            }
+
+            tbDx.Text = matrix.dx.ToString();
+            tbDy.Text = matrix.dy.ToString();
+            tbDz.Text = matrix.dz.ToString();
+
+            tbProbability.Text = matrix.probability.ToString();
+
         }
 
         public MatrixForm(IContainer container)
@@ -128,6 +163,15 @@ namespace IFS_openGL_test.GUI
             bDelete.SetBounds(w - mezeraVelka - delBtnW, h - mezeraVelka - delBtnH, delBtnW, delBtnH);
             bDelete.Click += bDelete_Click;
             this.Controls.Add(bDelete);
+
+            //button pro výběr barvy
+            bVyberBarvy = new Button();
+            bVyberBarvy.Text = "";
+            bVyberBarvy.SetBounds(mezeraVelka, bDelete.Location.Y, delBtnW, delBtnH);
+            bVyberBarvy.BackColor = this.barva;
+            bVyberBarvy.Click += bVyberBarvy_Click;
+            this.Controls.Add(bVyberBarvy);
+
         }
 
         #region načítání dat z komponenty
@@ -217,7 +261,7 @@ namespace IFS_openGL_test.GUI
                 return null;
             }
 
-            return new Matrix(matice, dxyz[0], dxyz[1], dxyz[2], prvd);
+            return new Matrix(matice, dxyz[0], dxyz[1], dxyz[2], prvd, this.barva);
         }
 
         #endregion
@@ -226,11 +270,28 @@ namespace IFS_openGL_test.GUI
         /// Reakce na událost kliknutí na mazací tlačítko. Přes odkaz na rodiče se zavolá metoda delete a objekt se zničí.
         /// </summary>
         /// <param name="sender">Objekt který na událost reaguje</param>
-        /// <param name="e">Argumenty událost.</param>
+        /// <param name="e">Argumenty události.</param>
         private void bDelete_Click(object sender, EventArgs e)
         {
             rodic.deleteMatrix(this);
             this.Dispose();
+        }
+
+        /// <summary>
+        /// Metoda spustí colordialog na výběr barvy.
+        /// </summary>
+        /// <param name="sender">Objekt, který na událost reaguje.</param>
+        /// <param name="e">Argumenty události.</param>
+        private void bVyberBarvy_Click(object sender, EventArgs e)
+        {
+            cdBarva = new ColorDialog();
+            cdBarva.Color = this.barva;
+
+            if(cdBarva.ShowDialog() == DialogResult.OK)
+            {
+                this.barva = cdBarva.Color;
+                this.bVyberBarvy.BackColor = this.barva;
+            }
         }
     }
 }

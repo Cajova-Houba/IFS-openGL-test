@@ -10,39 +10,48 @@ namespace IFS_openGL_test.ifs
     public class IFS
     {
         //transformace
-        Matrix m1 = new Matrix(new float[,]{
+        Matrix stm1 = new Matrix(new float[,]{
                                             {0.5f,0,0},
                                             {0,0.5f,0},
                                             {0,0,0.5f}
-        }, 0, 0.5f, 0, 0.2);
-        Matrix m2 = new Matrix(new float[,]{
+        }, 0, 0.5f, 0, 0.2, barvy[0]);
+        Matrix stm2 = new Matrix(new float[,]{
                                             {0.5f,0,0},
                                             {0,0.5f,0},
                                             {0,0,0.5f}
-        }, 0.5f, -0.5f, -0.5f, 0.2);
-        Matrix m3 = new Matrix(new float[,]{
+        }, 0.5f, -0.5f, -0.5f, 0.2, barvy[1]);
+        Matrix stm3 = new Matrix(new float[,]{
                                             {0.5f,0,0},
                                             {0,0.5f,0},
                                             {0,0,0.5f}
-        }, 0.5f, -0.5f, 0.5f, 0.2);
+        }, 0.5f, -0.5f, 0.5f, 0.2, barvy[2]);
 
-        Matrix m4 = new Matrix(new float[,]{
+        Matrix stm4 = new Matrix(new float[,]{
                                             {0.5f,0,0},
                                             {0,0.5f,0},
                                             {0,0,0.5f}
-        }, -0.5f, -0.5f, -0.5f, 0.2);
+        }, -0.5f, -0.5f, -0.5f, 0.2, barvy[3]);
 
-        Matrix m5 = new Matrix(new float[,]{
+        Matrix stm5 = new Matrix(new float[,]{
                                             {0.5f,0,0},
                                             {0,0.5f,0},
                                             {0,0,0.5f}
-        }, -0.5f, -0.5f, 0.5f, 0.2);
+        }, -0.5f, -0.5f, 0.5f, 0.2, barvy[4]);
+
+        //maximální počet transformací je 9 => 9 barev, pro každou transformaci 1
+        static Color[] barvy = new Color[] {Color.Red, Color.Green, Color.Blue, 
+                                     Color.Orange, Color.Yellow, Color.Violet, 
+                                     Color.Aqua, Color.GreenYellow, Color.White};
 
         //seznam používaných transformací
         private List<Matrix> transformace;
         private Random r;
         private bool dbg = false;
-        private int pocetTransformaci = 5;
+
+        //index vybrane transforamce
+        private int indexTransforamce;
+
+        private int[] statistika;
 
         public IFS(List<Matrix> matice=null)
         {
@@ -50,15 +59,25 @@ namespace IFS_openGL_test.ifs
             transformace = new List<Matrix>();
             if(matice == null)
             {
-                transformace.Add(m1);
-                transformace.Add(m2);
-                transformace.Add(m3);
-                transformace.Add(m4);
-                transformace.Add(m5);
+                transformace.Add(stm1);
+                transformace.Add(stm2);
+                transformace.Add(stm3);
+                transformace.Add(stm4);
+                transformace.Add(stm5);
             }
             else
             {
                 transformace = matice;
+            }
+            inicStatistika();
+        }
+
+        private void inicStatistika()
+        {
+            statistika = new int[transformace.Count];
+            for (int i = 0; i < statistika.Length; i++)
+            {
+                statistika[i] = 0;
             }
         }
 
@@ -75,12 +94,12 @@ namespace IFS_openGL_test.ifs
             for (int i = 0; i < body.Length; i++)
             {
                 float rOld = body[i].x, gOld = body[i].y, bOld = body[i].z;
-                //body[i].r = (rOld - rozsahy[0, 0]) / (rozsahy[0, 1] - rozsahy[0, 0]);
-                //body[i].g = (gOld - rozsahy[1, 0]) / (rozsahy[1, 1] - rozsahy[1, 0]);
-                //body[i].b = (bOld - rozsahy[2, 0]) / (rozsahy[2, 1] - rozsahy[2, 0]);
-                body[i].r = 1f;
-                body[i].g = 0;
-                body[i].b = 0;
+                body[i].r = (rOld - rozsahy[0, 0]) / (rozsahy[0, 1] - rozsahy[0, 0]);
+                body[i].g = (gOld - rozsahy[1, 0]) / (rozsahy[1, 1] - rozsahy[1, 0]);
+                body[i].b = (bOld - rozsahy[2, 0]) / (rozsahy[2, 1] - rozsahy[2, 0]);
+                //body[i].r = 1f;
+                //body[i].g = 0;
+                //body[i].b = 0;
             }
 
             return body;
@@ -98,18 +117,23 @@ namespace IFS_openGL_test.ifs
             if (transformace.Count == 0) { return null; }
 
             double tmp = 0;
+            indexTransforamce = -1;
             double rnd = r.NextDouble();
             foreach(Matrix m in transformace)
             {
                 if (m.probability > 0)
                 {
                     tmp += m.probability;
-                    if (tmp < rnd) { return m; }
+                    indexTransforamce++;
+                    if (tmp > rnd) 
+                    { 
+                        statistika[indexTransforamce]++; 
+                        return m; 
+                    }
                 }
             }
 
-            //pokud kód došel sem a nic nevrátil, znamená to chybu v praděpodobnostech matic
-            return null;
+            return transformace.Last();
         }
 
         /// <summary>
@@ -133,24 +157,6 @@ namespace IFS_openGL_test.ifs
                     novy = bod.vynasob(transformace.ElementAt(k));
                 }
             }
-            //switch(k)
-            //{
-            //    case 0:
-            //        novy = bod.vynasob(m1);
-            //        break;
-            //    case 1:
-            //        novy = bod.vynasob(m2);
-            //        break;
-            //    case 2:
-            //        novy = bod.vynasob(m3);
-            //        break;
-            //    case 3:
-            //        novy = bod.vynasob(m4);
-            //        break;
-            //    case 4:
-            //        novy = bod.vynasob(m5);
-            //        break;
-            //}
 
             return novy;
         }
@@ -172,22 +178,32 @@ namespace IFS_openGL_test.ifs
             //};
 
             //počítání jednotlivých iterací
+            //obarveni do zelena podle stáří
+            //na začátku každý bod bílý
+            //při každé iteraci snížit barevnou složku kromě zelené o i/iterace
             for (int i = 0; i < iterace; i++)
             {
                 for (int k = 0; k < body.Length; k++)
                 {
-                    int p = r.Next(pocetTransformaci);
-                    Bod bn = funkce3D(body[k], p);
+                    Bod bn = funkce3D(body[k]);
                     
-                    dbgOut(String.Format("[{0},{1},{2}] -> {3} ->[{4},{5},{6}]", body[k].x, body[k].y, body[k].z, p, bn.x, bn.y, bn.z));
-
                     body[k] = bn;
+                    //bn.setColor(getColorStari(i,iterace));
                     res.Add(bn);
                 }
             }
 
             return res.ToArray();
+        }
 
+        private Color getColorStari(int i, int maxIterace)
+        {
+            //do zelena
+            double r = 255 - (i / (double)maxIterace) * 255;
+            double g = 255;
+            double b = 255 - (i / (double)maxIterace) * 255;
+
+            return Color.FromArgb((int)r, (int)g, (int)b);
         }
 
         /// <summary>
@@ -245,7 +261,7 @@ namespace IFS_openGL_test.ifs
                 body[i] = new Bod(xn, yn, zn, body[i].getColor());
             }
 
-            return obarvi(body, new float[,] { { xMin, xMax }, { yMin, yMax }, { zMin, zMax }});
+            return body;//obarvi(body, new float[,] { { xMin, xMax }, { yMin, yMax }, { zMin, zMax }});
         }
 
         /// <summary>
@@ -254,9 +270,14 @@ namespace IFS_openGL_test.ifs
         /// </summary>
         /// <param name="iterace">Maximální počet iterací.</param>
         /// <returns>Pole bodů představující sierpinského trojúhelník.</returns>
-        public Bod[] sierpTrojuhelnikNahodne3D(int iterace)
+        public Bod[] fraktalNahodne3D(int iterace)
         {
+            inicStatistika();
             Bod[] res = sierpNahodne3D(iterace);
+            for (int i = 0; i < transformace.Count; i++)
+            {
+                Console.WriteLine(String.Format("{0}: {1}",i,statistika[i]));
+            }
             return transformujBody3D(res);
         }
 
