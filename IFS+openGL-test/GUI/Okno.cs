@@ -43,7 +43,7 @@ namespace IFS_openGL_test.GUI
                                      Color.Orange, Color.Yellow, Color.Violet, 
                                      Color.Aqua, Color.GreenYellow, Color.White};
 
-        #region příklady IDS
+        #region příklady IFS
         #region sierp troj
         static Matrix stm1 = new Matrix(new float[,]{
                                             {0.5f,0,0},
@@ -116,6 +116,66 @@ namespace IFS_openGL_test.GUI
                                             {0,0,0}
         }, 1, 0f, 0, 0.5, barvy[1]);
         Matrix[] dkMatice = new Matrix[] { dkm1, dkm2 };
+
+        #endregion
+
+        #region kriz 1
+        static Matrix km1 = new Matrix(new float[,]{
+                                            {0.5f,0,0},
+                                            {0,0.5f,0},
+                                            {0,0,0.5f}
+        }, 0, 0, 0, (float)(1/9f), barvy[0]);
+
+        static Matrix km2 = new Matrix(new float[,]{
+                                            {0.25f,0,0},
+                                            {0,0.25f,0},
+                                            {0,0,0.25f}
+        }, -0.75f, 0.75f, 0.75f, (float)(1 / 9f), barvy[1]);
+
+        static Matrix km3 = new Matrix(new float[,]{
+                                            {0.25f,0,0},
+                                            {0,0.25f,0},
+                                            {0,0,0.25f}
+        }, 0.75f, 0.75f, -0.75f, (float)(1 / 9f), barvy[2]);
+
+        static Matrix km4 = new Matrix(new float[,]{
+                                            {0.25f,0,0},
+                                            {0,0.25f,0},
+                                            {0,0,0.25f}
+        }, 0.75f, -0.75f, -0.75f, (float)(1 / 9f), barvy[3]);
+
+        static Matrix km5 = new Matrix(new float[,]{
+                                            {0.25f,0,0},
+                                            {0,0.25f,0},
+                                            {0,0,0.25f}
+        }, -0.75f, -0.75f, 0.75f, (float)(1 / 9f), barvy[4]);
+
+        static Matrix km6 = new Matrix(new float[,]{
+                                            {0.25f,0,0},
+                                            {0,0.25f,0},
+                                            {0,0,0.25f}
+        }, 0.75f, 0.75f, 0.75f, (float)(1 / 9f), barvy[5]);
+
+        static Matrix km7 = new Matrix(new float[,]{
+                                            {0.25f,0,0},
+                                            {0,0.25f,0},
+                                            {0,0,0.25f}
+        }, 0.75f, -0.75f, 0.75f, (float)(1 / 9f), barvy[6]);
+
+        static Matrix km8 = new Matrix(new float[,]{
+                                            {0.25f,0,0},
+                                            {0,0.25f,0},
+                                            {0,0,0.25f}
+        }, -0.75f, 0.75f, -0.75f, (float)(1 / 9f), barvy[7]);
+
+        static Matrix km9 = new Matrix(new float[,]{
+                                            {0.25f,0,0},
+                                            {0,0.25f,0},
+                                            {0,0,0.25f}
+        }, -0.75f, -0.75f, -0.75f, (float)(1 / 9f), barvy[8]);
+
+        Matrix[] kMatice = new Matrix[] { km1, km2, km3, km4, 
+                                        km5, km6, km7, km8, km9 };
 
         #endregion
 
@@ -337,6 +397,11 @@ namespace IFS_openGL_test.GUI
         private void bDraciKrivka_Click(object sender, EventArgs e)
         {
             setZadavaciFormulare(dkMatice);
+        }
+
+        private void bKriz1_Click(object sender, EventArgs e)
+        {
+            setZadavaciFormulare(kMatice);
         }
 
     }

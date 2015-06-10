@@ -20,7 +20,16 @@ namespace IFS_openGL_test
         private int height;
 
         private Stopwatch watch;
-        private static float angle = 0;
+
+        /*úroveň zoomu
+         * 1 = žádný zoom
+         * >1 = větší zoom
+         * <1 = menší zoom
+         */
+        private static float zoomRatio = 1f;
+
+        //změna zoomu při pohybu kolečkem
+        private static float zoomDelta = 0.1f;
 
         //body které se budou vykreslovat
         Bod[] body;
@@ -84,6 +93,7 @@ namespace IFS_openGL_test
             Glut.glutDisplayFunc(onDisplay);
             Glut.glutMouseFunc(onMouseButton);
             Glut.glutMotionFunc(onMouseMove);
+            Glut.glutMouseWheelFunc(onMouseWheel);
         }
 
         /// <summary>
@@ -95,7 +105,7 @@ namespace IFS_openGL_test
         }
 
         /// <summary>
-        /// Reakce na událost zorbrazení.
+        /// Reakce na událost zobrazení.
         /// </summary>
         private void onDisplay()
         {
@@ -104,9 +114,9 @@ namespace IFS_openGL_test
             watch.Restart();
 
             Gl.glClear(Gl.GL_COLOR_BUFFER_BIT | Gl.GL_DEPTH_BUFFER_BIT);
-            Gl.glMatrixMode(Gl.GL_MODELVIEW);
+            Gl.glMatrixMode(Gl.GL_PROJECTION);
             Gl.glLoadIdentity();
-            Glu.gluPerspective(45.0, 1, 1, 500);
+            Glu.gluPerspective(45.0 * zoomRatio, 1, 1, 500);
             Gl.glTranslatef(0f, 0f, -5f);
             Gl.glRotatef(angleX, 0f, 1f, 0f);
             Gl.glRotatef(angleY, 1f, 0f, 0f);
@@ -147,6 +157,24 @@ namespace IFS_openGL_test
             Glut.glutSwapBuffers();
         }
         
+        /// <summary>
+        /// Reakce na událost pohnutí kolečkem myši - přiblížení a oddálení.
+        /// </summary>
+        private void onMouseWheel(int button, int state, int x, int y)
+        {
+            //kolečko nahoru
+            if (state > 0)
+            {
+                zoomRatio -= zoomDelta;
+            }
+
+            //kolečko dolu
+            else
+            {
+                zoomRatio += zoomDelta;
+            }
+        }
+
         /// <summary>
         /// Reakce na stisknutí tlačítka myši.
         /// </summary>
