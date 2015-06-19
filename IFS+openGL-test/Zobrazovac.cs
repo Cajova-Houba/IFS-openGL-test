@@ -88,7 +88,7 @@ namespace IFS_openGL_test
             Glut.glutInitWindowSize(width, height);                                         //rozmery okna
             Glut.glutCloseFunc(onClose);
             Glut.glutSetOption(Glut.GLUT_ACTION_ON_WINDOW_CLOSE, Glut.GLUT_ACTION_GLUTMAINLOOP_RETURNS);
-            winHandler = Glut.glutCreateWindow("IFS-OpenGL test");                          //vytvornei okna
+            winHandler = Glut.glutCreateWindow("IFS Visualiser");
         }
 
         /// <summary>
@@ -169,17 +169,20 @@ namespace IFS_openGL_test
         /// </summary>
         private void onMouseWheel(int button, int state, int x, int y)
         {
+            //zoom ratio násobí úhel, který je 45°. Nejméně může být 0 a nejvíce 4
             //kolečko nahoru
             if (state > 0)
             {
-                zoomRatio -= zoomDelta;
+                zoomRatio = Math.Max(zoomRatio - zoomDelta,0);
             }
 
             //kolečko dolu
             else
             {
-                zoomRatio += zoomDelta;
+                zoomRatio = Math.Min(zoomRatio + zoomDelta, 4);
             }
+
+            Console.WriteLine(zoomRatio);
         }
 
         /// <summary>
