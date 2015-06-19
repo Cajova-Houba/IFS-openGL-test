@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using IFS_openGL_test.ifs;
+using System.IO;
 
 namespace IFS_openGL_test.GUI
 {
@@ -22,6 +23,9 @@ namespace IFS_openGL_test.GUI
         //maximální počet matic ve sloupci
         private const int MAX_POCET_MATIC_SLOUPEC = 3;
 
+        //počet generovaných bodů
+        private const int POCET_BODU = 200000;
+
         //sloupec do kterého se nové matice umisťují
         private int sloupec = 0;
 
@@ -32,7 +36,7 @@ namespace IFS_openGL_test.GUI
         private String defText = "Matice";
 
         //odsazení mezi maticemi
-        private int mezeraVelka = 10;
+        private int mezeraVelka = 25;
         private int mezeraMala = 5;
 
         //komponenty na zadávání matic
@@ -364,7 +368,7 @@ namespace IFS_openGL_test.GUI
 
             Bod[] fraktal;
             IFS ifs = new IFS(matice);
-            fraktal = ifs.fraktalNahodne3D(150000);
+            fraktal = ifs.fraktalNahodne3D(POCET_BODU);
             zobrazovac = new Zobrazovac(1024, 648, fraktal);
         }
 
@@ -382,6 +386,126 @@ namespace IFS_openGL_test.GUI
             addNewMatrixes(matice);
 
             aktualizujMatice();
+        }
+
+        /// <summary>
+        /// Metoda rozparsuje zadaný řádek a vytvoří z něj matici. Pokud je řádek ve špatném formátu, nebo dojde k chybě, vrátí null.
+        /// </summary>
+        private Matrix parseLine(String line)
+        {
+            float[,] m = new float[3, 3];
+            float dx, dy, dz;
+            float pr;
+            Color color;
+            String[] parsedLine = line.Split(';');
+
+            //špatný počet argumentů
+            if(parsedLine.Length != 14)
+            {
+                return null;
+            }
+            else
+            {
+                try
+                {
+                    //načtení matice
+                    int i = 0;      //index v parsedLine
+                    for (int j = 0; j < 3; j++)
+                    {
+                        for (int k = 0; k < 3; k++)
+                        {
+                            m[j, k] = (float)Convert.ToDouble(parsedLine[i]);
+                            i++;
+                        }
+                    }
+
+                    //dx,dy,dz
+                    dx = (float)Convert.ToDouble(parsedLine[i++]);
+                    dy = (float)Convert.ToDouble(parsedLine[i++]);
+                    dz = (float)Convert.ToDouble(parsedLine[i++]);
+
+                    //pravdepodobnost
+                    pr = (float)Convert.ToDouble(parsedLine[i++]);
+
+                    //barva
+                    color = ColorTranslator.FromHtml("#"+parsedLine[i]);
+
+                }
+                catch (Exception)
+                {
+                    return null;
+                }
+            }
+
+            return new Matrix(m, dx, dy, dz, pr, color);
+        }
+
+        /// <summary>
+        /// Metoda se pokusí načíst IFS ze zadaného souboru. Pokud načtení selže, vypíše se chybová zpráva.
+        /// </summary>
+        private Matrix[] loadIFSFromFile(String name)
+        {
+            //případné chybné řádky
+            List<int> chybneRadky = new List<int>();
+            int cisloRadku = 0;
+
+            //seznam načtených matic
+            List<Matrix> matice = new List<Matrix>();
+
+            //načtení ze souboru
+            StreamReader sr = new StreamReader(name);
+            String line = sr.ReadLine();
+            while(line != null)
+            {
+                Matrix m = parseLine(line);
+                if(m != null)
+                {
+                    matice.Add(m);
+                }
+                else
+                {
+                    chybneRadky.Add(cisloRadku);
+                }
+                cisloRadku++;
+                line = sr.ReadLine();
+            }
+
+            sr.Close();
+
+            //pokud jsou chyby, výpis
+            if (chybneRadky.Count > 0)
+            {
+                int[] radky = chybneRadky.ToArray();
+                StringBuilder sb = new StringBuilder("Chyby na řádcích: ");
+                for (int i = 0; i < radky.Length; i++)
+                {
+                    sb.Append(radky[i]);
+                    if(i != radky.Length -1)
+                    {
+                        sb.Append(", ");
+                    }
+                }
+                sb.Append(".");
+
+                MessageBox.Show(sb.ToString(), "Chyba při načítání IFS", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+            }
+
+            //vrácení seznamu matic
+            return matice.ToArray();
+        }
+
+        /// <summary>
+        /// Metoda uloží zadané pole matic do souboru.
+        /// </summary>
+        private void saveIFSToFile(Matrix[] matice, String name)
+        {
+            StreamWriter sw = new StreamWriter(name);
+            foreach (Matrix m in matice)
+            {
+                sw.WriteLine(m.toString());
+            }
+            sw.Close();
         }
 
         private void bSierpTroj_Click(object sender, EventArgs e)
@@ -402,6 +526,69 @@ namespace IFS_openGL_test.GUI
         private void bKriz1_Click(object sender, EventArgs e)
         {
             setZadavaciFormulare(kMatice);
+        }
+
+        private void menuLoadIFS_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog fd = new OpenFileDialog();
+            Matrix[] matice = new Matrix[0];
+
+            if(fd.ShowDialog() == DialogResult.OK)
+            {
+                matice = loadIFSFromFile(fd.FileName);
+                setZadavaciFormulare(matice);
+            }
+        }
+
+        private void menuSaveIFS_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog fd = new SaveFileDialog();
+
+            if(fd.ShowDialog() == DialogResult.OK)
+            {
+                //názvy chybně zadaných matic, které budou ignorovány
+                List<String> chybneMatice = new List<string>();
+
+                //načtení matic z matrixFormů
+                List<Matrix> matice = new List<Matrix>();
+                Matrix m;
+                foreach (MatrixForm mf in matrixForms)
+	            {
+                    m = mf.getMatrix();
+                    if(m != null)
+                    {
+                        matice.Add(m);
+                    }
+                    else
+                    {
+                        chybneMatice.Add(mf.getName());
+                    }
+	            }
+
+                //vypsání chybných matic, poku nějaké jsou
+                if (chybneMatice.Count > 0)
+                {
+                    StringBuilder sb = new StringBuilder("Chybně zadané matice, které nebudou uloženy: ");
+                    for (int i = 0; i < chybneMatice.Count; i++)
+                    {
+                        sb.Append(chybneMatice.ElementAt(i));
+                        if(i != chybneMatice.Count -1)
+                        {
+                            sb.Append(", ");
+                        }
+                    }
+                    sb.Append(".");
+
+                    MessageBox.Show(sb.ToString(), "Chybně zadané matice", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+
+                saveIFSToFile(matice.ToArray(), fd.FileName);
+            }
+        }
+
+        private void menuKonec_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
         }
 
     }

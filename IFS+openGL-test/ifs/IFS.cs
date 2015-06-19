@@ -51,6 +51,7 @@ namespace IFS_openGL_test.ifs
         //index vybrane transforamce
         private int indexTransforamce;
 
+        //statistika vybraných transformací - hlavně pro testování
         private int[] statistika;
 
         public IFS(List<Matrix> matice=null)
@@ -83,6 +84,7 @@ namespace IFS_openGL_test.ifs
 
         /// <summary>
         /// Metoda obarví zadané pole bodů podle jejich souřadnic a zadaných rozsahů (minimum na ose = 0, maximum 255).
+        /// Momentálně nepoužito.
         /// </summary>
         /// <param name="body">Pole bodů k obarvení.</param>
         /// <param name="rozsahy">Rozsahy ve tvaru [[x_min,x_max] , [y_min,y_max] , [z_min,z_max]].</param>
@@ -166,11 +168,11 @@ namespace IFS_openGL_test.ifs
         /// </summary>
         /// <param name="iterace">Maximální počet iterací.</param>
         /// <returns>Pole bodů, které představují sierpinského trojúhelník v prostoru.</returns>
-        private Bod[] sierpNahodne3D(int iterace)
+        private Bod[] chaosGame3D(int iterace)
         {
             List<Bod> res = new List<Bod>();
 
-            //body na pocatku
+            //body na pocatku - jeden bod stačí
             Bod[] body = new Bod[] { new Bod(0f, 0f, 0f, Color.Red) };
             //float[][] body = new float[][] { new float[]{0f,0f},
             //                                 new float[]{0.3f,0},
@@ -178,9 +180,6 @@ namespace IFS_openGL_test.ifs
             //};
 
             //počítání jednotlivých iterací
-            //obarveni do zelena podle stáří
-            //na začátku každý bod bílý
-            //při každé iteraci snížit barevnou složku kromě zelené o i/iterace
             for (int i = 0; i < iterace; i++)
             {
                 for (int k = 0; k < body.Length; k++)
@@ -188,7 +187,6 @@ namespace IFS_openGL_test.ifs
                     Bod bn = funkce3D(body[k]);
                     
                     body[k] = bn;
-                    //bn.setColor(getColorStari(i,iterace));
                     res.Add(bn);
                 }
             }
@@ -196,6 +194,9 @@ namespace IFS_openGL_test.ifs
             return res.ToArray();
         }
 
+        /// <summary>
+        /// Metoda slouží k obarvování podle stáří. V současné době nepoužita.
+        /// </summary>
         private Color getColorStari(int i, int maxIterace)
         {
             //do zelena
@@ -232,9 +233,9 @@ namespace IFS_openGL_test.ifs
                 zMax = Math.Max(body[i].z, zMax);
             }
 
-            float[] rX = new float[] { -1f, 1f };
-            float[] rY = new float[] { -1f, 1f };
-            float[] rZ = new float[] { -1f, 1f };
+            float[] rX = new float[] { -2f, 2f };
+            float[] rY = new float[] { -2f, 2f };
+            float[] rZ = new float[] { -2f, 2f };
             //transformace na [rX[0]..rX[1], rY[0]..rY[1], rZ[0]..rZ[1]]
             for (int i = 0; i < body.Length; i++)
             {
@@ -273,10 +274,10 @@ namespace IFS_openGL_test.ifs
         public Bod[] fraktalNahodne3D(int iterace)
         {
             inicStatistika();
-            Bod[] res = sierpNahodne3D(iterace);
+            Bod[] res = chaosGame3D(iterace);
             for (int i = 0; i < transformace.Count; i++)
             {
-                Console.WriteLine(String.Format("{0}: {1}",i,statistika[i]));
+                Console.WriteLine(String.Format("{0}: {1} - > {2}%",i,statistika[i],100*statistika[i]/(float)iterace));
             }
             return transformujBody3D(res);
         }

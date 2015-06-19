@@ -26,13 +26,20 @@ namespace IFS_openGL_test
          * >1 = větší zoom
          * <1 = menší zoom
          */
-        private static float zoomRatio = 1f;
+        private float zoomRatio = 1f;
 
         //změna zoomu při pohybu kolečkem
-        private static float zoomDelta = 0.1f;
+        private float zoomDelta = 0.25f;
 
         //body které se budou vykreslovat
         Bod[] body;
+
+        //pro zobrazeni
+        //nejmensi vzdalenost pro vykresleni
+        private float zNear = 0;
+
+        //nejvetsi vzdalenost pro vykresleni
+        private float zFar = 100;
 
         //roatece pomocí myši
         private float angleX = 0f;
@@ -116,7 +123,7 @@ namespace IFS_openGL_test
             Gl.glClear(Gl.GL_COLOR_BUFFER_BIT | Gl.GL_DEPTH_BUFFER_BIT);
             Gl.glMatrixMode(Gl.GL_PROJECTION);
             Gl.glLoadIdentity();
-            Glu.gluPerspective(45.0 * zoomRatio, 1, 1, 500);
+            Glu.gluPerspective(45.0 * zoomRatio, width/height, zNear, zFar);
             Gl.glTranslatef(0f, 0f, -5f);
             Gl.glRotatef(angleX, 0f, 1f, 0f);
             Gl.glRotatef(angleY, 1f, 0f, 0f);

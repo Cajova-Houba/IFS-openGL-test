@@ -7,7 +7,6 @@ namespace IFS_openGL_test
 {
     static class Program
     {
-        static Zobrazovac zobrazovac;
 
         /// <summary>
         /// The main entry point for the application.

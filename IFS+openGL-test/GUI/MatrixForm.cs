@@ -293,5 +293,14 @@ namespace IFS_openGL_test.GUI
                 this.bVyberBarvy.BackColor = this.barva;
             }
         }
+
+        /// <summary>
+        /// Metoda vrátí obsah pole Text.
+        /// </summary>
+        /// <returns></returns>
+        public String getName()
+        {
+            return this.Text;
+        }
     }
 }
