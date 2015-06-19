@@ -41,7 +41,10 @@ namespace IFS_openGL_test
         //nejvetsi vzdalenost pro vykresleni
         private float zFar = 100;
 
-        //roatece pomocí myši
+        //úhel, který zabírá kamera
+        private float fovy = 60;
+
+        //rotace pomocí myši
         private float angleX = 0f;
         private float deltaAngleX = 0f;
         private float deltaAngleXOld = 0f;
@@ -123,7 +126,7 @@ namespace IFS_openGL_test
             Gl.glClear(Gl.GL_COLOR_BUFFER_BIT | Gl.GL_DEPTH_BUFFER_BIT);
             Gl.glMatrixMode(Gl.GL_PROJECTION);
             Gl.glLoadIdentity();
-            Glu.gluPerspective(45.0 * zoomRatio, width/height, zNear, zFar);
+            Glu.gluPerspective(fovy * zoomRatio, width/height, zNear, zFar);
             Gl.glTranslatef(0f, 0f, -5f);
             Gl.glRotatef(angleX, 0f, 1f, 0f);
             Gl.glRotatef(angleY, 1f, 0f, 0f);
@@ -169,7 +172,7 @@ namespace IFS_openGL_test
         /// </summary>
         private void onMouseWheel(int button, int state, int x, int y)
         {
-            //zoom ratio násobí úhel, který je 45°. Nejméně může být 0 a nejvíce 4
+            //zoom ratio násobí úhel, který je x°. Nejméně může být 0 a nejvíce 180/x
             //kolečko nahoru
             if (state > 0)
             {
@@ -179,7 +182,7 @@ namespace IFS_openGL_test
             //kolečko dolu
             else
             {
-                zoomRatio = Math.Min(zoomRatio + zoomDelta, 4);
+                zoomRatio = Math.Min(zoomRatio + zoomDelta, 180/fovy);
             }
 
             Console.WriteLine(zoomRatio);
@@ -221,8 +224,8 @@ namespace IFS_openGL_test
                 deltaAngleXOld = deltaAngleX;
                 deltaAngleYOld = deltaAngleY;
 
-                deltaAngleX = (x - xOrigin) * 0.01f;
-                deltaAngleY = (y - yOrigin) * 0.01f;
+                deltaAngleX = (x - xOrigin) * 0.02f;
+                deltaAngleY = (y - yOrigin) * 0.02f;
 
                 //nutné řešit změnu pohybu
                 if(Math.Abs(deltaAngleX) < Math.Abs(deltaAngleXOld))
