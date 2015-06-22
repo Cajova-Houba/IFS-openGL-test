@@ -173,7 +173,7 @@ namespace IFS_openGL_test.ifs
             List<Bod> res = new List<Bod>();
 
             //body na pocatku - jeden bod stačí
-            Bod[] body = new Bod[] { new Bod(0f, 0f, 0f, Color.Red) };
+            Bod[] body = new Bod[] { new Bod(0f, 0f, 0f, Color.Red)};
             //float[][] body = new float[][] { new float[]{0f,0f},
             //                                 new float[]{0.3f,0},
             //                                 new float[]{0f,0.3f}
