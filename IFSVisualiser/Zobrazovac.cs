@@ -15,6 +15,10 @@ namespace IFS_openGL_test
         //ID vytvořeného okna
         private int winHandler;
 
+        //defaultní rozměry
+        public const int DEF_WIDTH = 1024;
+        public const int DEF_HEIGHT = 648;
+
         //rozměry
         private int width;
         private int height;
@@ -56,7 +60,10 @@ namespace IFS_openGL_test
         private int xOrigin = -1;
         private int yOrigin = -1;
 
-        public Zobrazovac(int w, int h, Bod[] body)
+        //instance podle vzoru jedináček
+        private static Zobrazovac instance;
+
+        private Zobrazovac(int w, int h)
         {
             this.width = w;
             this.height = h;
@@ -64,12 +71,23 @@ namespace IFS_openGL_test
             inicGl();
             inicGlut();
             inicEvents();
+        }
 
+        public static Zobrazovac getZobrazovac()
+        {
+            if (Zobrazovac.instance == null)
+            {
+                Zobrazovac.instance = new Zobrazovac(DEF_WIDTH,DEF_HEIGHT);
+            }
+
+            return instance;
+        }
+
+        public void start(Bod[] body)
+        {
             setBody(body);
-
-            watch = Stopwatch.StartNew();
-
             Glut.glutMainLoop();                        //spuštění hlavní zobrazovací smyčky
+            Glut.glutShowWindow();
         }
 
         /// <summary>
@@ -119,10 +137,6 @@ namespace IFS_openGL_test
         /// </summary>
         private void onDisplay()
         {
-            watch.Stop();
-            float deltaTime = watch.ElapsedMilliseconds / 250f;
-            watch.Restart();
-
             Gl.glClear(Gl.GL_COLOR_BUFFER_BIT | Gl.GL_DEPTH_BUFFER_BIT);
             Gl.glMatrixMode(Gl.GL_PROJECTION);
             Gl.glLoadIdentity();

@@ -369,7 +369,8 @@ namespace IFS_openGL_test.GUI
             Bod[] fraktal;
             IFS ifs = new IFS(matice);
             fraktal = ifs.fraktalNahodne3D(POCET_BODU);
-            zobrazovac = new Zobrazovac(1024, 648, fraktal);
+            zobrazovac = Zobrazovac.getZobrazovac();
+            zobrazovac.start(fraktal);
         }
 
         #endregion
