@@ -4,6 +4,7 @@ using Tao.FreeGlut;
 using Tao.OpenGl;
 using IFS_openGL_test.ifs;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace IFS_openGL_test
 {
@@ -23,7 +24,8 @@ namespace IFS_openGL_test
         private int width;
         private int height;
 
-        private Stopwatch watch;
+        //název okna
+        private string title = "IFS Visualiser";
 
         /*úroveň zoomu
          * 1 = žádný zoom
@@ -60,10 +62,9 @@ namespace IFS_openGL_test
         private int xOrigin = -1;
         private int yOrigin = -1;
 
-        //instance podle vzoru jedináček
-        private static Zobrazovac instance;
+        public bool isVisible;
 
-        private Zobrazovac(int w, int h)
+        public Zobrazovac(int w, int h, Bod[] body)
         {
             this.width = w;
             this.height = h;
@@ -71,23 +72,22 @@ namespace IFS_openGL_test
             inicGl();
             inicGlut();
             inicEvents();
-        }
 
-        public static Zobrazovac getZobrazovac()
-        {
-            if (Zobrazovac.instance == null)
-            {
-                Zobrazovac.instance = new Zobrazovac(DEF_WIDTH,DEF_HEIGHT);
-            }
-
-            return instance;
-        }
-
-        public void start(Bod[] body)
-        {
             setBody(body);
-            Glut.glutMainLoop();                        //spuštění hlavní zobrazovací smyčky
-            Glut.glutShowWindow();
+
+            isVisible = true;
+            Glut.glutMainLoop();
+        }
+
+        public void show()
+        {
+            if(!isVisible)
+            {
+                //Glut.glutShowWindow();  
+                Glut.glutSetWindow(winHandler);
+                isVisible = true;
+                Glut.glutMainLoop();
+            }
         }
 
         /// <summary>
@@ -107,9 +107,8 @@ namespace IFS_openGL_test
             Glut.glutInit();                                                                //inicializace GLUT
             Glut.glutInitDisplayMode(Glut.GLUT_DOUBLE | Glut.GLUT_DEPTH | Glut.GLUT_RGB);   //double buffering
             Glut.glutInitWindowSize(width, height);                                         //rozmery okna
-            Glut.glutCloseFunc(onClose);
             Glut.glutSetOption(Glut.GLUT_ACTION_ON_WINDOW_CLOSE, Glut.GLUT_ACTION_GLUTMAINLOOP_RETURNS);
-            winHandler = Glut.glutCreateWindow("IFS Visualiser");
+            winHandler = Glut.glutCreateWindow(title);
         }
 
         /// <summary>
@@ -117,6 +116,7 @@ namespace IFS_openGL_test
         /// </summary>
         private void inicEvents()
         {
+            Glut.glutCloseFunc(onClose);
             Glut.glutIdleFunc(onDisplay);
             Glut.glutDisplayFunc(onDisplay);
             Glut.glutMouseFunc(onMouseButton);
@@ -129,7 +129,14 @@ namespace IFS_openGL_test
         /// </summary>
         private void onClose()
         {
-            Glut.glutHideWindow();
+            Console.WriteLine("Zavírám okno.");
+            if(isVisible)
+            {
+                Console.WriteLine("Pořád zavíram.");
+                isVisible = false;
+                Glut.glutHideWindow();
+                Console.WriteLine("Zavřeno.");
+            }
         }
 
         /// <summary>

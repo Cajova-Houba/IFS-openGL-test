@@ -14,8 +14,8 @@ namespace IFS_openGL_test.GUI
 {
     public partial class Okno : Form
     {
-        //OpenGL
-        private Zobrazovac zobrazovac;
+        //Okno OpenGL
+        Zobrazovac zobrazovac;
 
         //maximální počet sloupců s maticemi
         private const int MAX_POCET_SLOUPCU_MATIC = 3;
@@ -318,6 +318,13 @@ namespace IFS_openGL_test.GUI
         /// <returns>Seznam načtených matic.</returns>
         private List<Matrix> nactiMatice()
         {
+            //výsledný výpis chyb bude ve formátu
+            //Ignorovány chybně zadané matice: 
+            //x: chyba; chyba; chyba;
+            //
+            //y: chyba; chyba; chyba;
+            //x,y jsou čísla matic, řetězce chyba; chyba; se získají z matrixformu 
+
             List<Matrix> res = new List<Matrix>();
             String ch = "Ignorovány chybně zadané matice: ";
             StringBuilder sbChyby = new StringBuilder();
@@ -327,7 +334,7 @@ namespace IFS_openGL_test.GUI
                 Matrix m = mf.getMatrix();
                 if(m == null)
                 {
-                    sbChyby.Append(mf.Text+";");
+                    sbChyby.Append("\n"+mf.Text+": "+mf.getLastError()+"\n");
                 }
                 else
                 {
@@ -369,8 +376,15 @@ namespace IFS_openGL_test.GUI
             Bod[] fraktal;
             IFS ifs = new IFS(matice);
             fraktal = ifs.fraktalNahodne3D(POCET_BODU);
-            zobrazovac = Zobrazovac.getZobrazovac();
-            zobrazovac.start(fraktal);
+            if(zobrazovac == null)
+            {
+                zobrazovac = new Zobrazovac(Zobrazovac.DEF_WIDTH, Zobrazovac.DEF_HEIGHT, fraktal);
+            }
+            else
+            {
+                zobrazovac.setBody(fraktal);
+                zobrazovac.show();
+            }
         }
 
         #endregion

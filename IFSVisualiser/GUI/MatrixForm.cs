@@ -51,6 +51,9 @@ namespace IFS_openGL_test.GUI
         //odkaz na rodiče kvůli mazání
         Okno rodic;
 
+        //text chyby při načítání matic
+        String err;
+
         public MatrixForm(Okno rodic, String caption, Color barva)
         {
             InitializeComponent();
@@ -115,6 +118,7 @@ namespace IFS_openGL_test.GUI
         /// </summary>
         private void inic()
         {
+            err = "";
             defTbSize = new System.Drawing.Size(tbW, tbH);
 
             //zadávání matice
@@ -152,7 +156,7 @@ namespace IFS_openGL_test.GUI
             pl.Text = "Pravděpodobnost:";
             pl.Location = new Point(mezeraVelka,h-mezeraVelka-delBtnH-tbH);
             tbProbability = new TextBox();
-            tbProbability.Text = "0,2";
+            tbProbability.Text = "0,5";
             tbProbability.SetBounds(pl.Location.X + pl.Width, pl.Location.Y-3, 2*tbW, tbH);
             this.Controls.Add(pl);
             this.Controls.Add(tbProbability);
@@ -194,8 +198,14 @@ namespace IFS_openGL_test.GUI
                         cislo = (float)Convert.ToDouble(tbMatice[i, j].Text);
                         res[i, j] = cislo;
                     }
+                    catch (FormatException)
+                    {
+                        err = err + "chybný formát čísla: " + tbMatice[i, j].Text+"; ";
+                        return null;
+                    }
                     catch (Exception)
                     {
+                        err += "neznámá chyba při načítání matice; ";
                         return null;
                     }
                 }
@@ -218,8 +228,14 @@ namespace IFS_openGL_test.GUI
                 res[1] = (float)Convert.ToDouble(tbDy.Text);
                 res[2] = (float)Convert.ToDouble(tbDz.Text);
             }
+            catch (FormatException)
+            {
+                err = err + " chybný formát jednoho z posunů; ";
+                return null;
+            }
             catch (Exception)
             {
+                err += "neznámá chyba při načítání posunů; ";
                 return null;
             }
 
@@ -238,8 +254,14 @@ namespace IFS_openGL_test.GUI
             {
                 res = (float)Convert.ToDouble(tbProbability.Text);
             }
+            catch (FormatException)
+            {
+                err += "chybný formát pravděpodobnosti; ";
+                return -1;
+            }
             catch (Exception)
             {
+                err += "neznámá chyba při načítání pravděpodobnosti; ";
                 return -1;
             }
 
@@ -261,7 +283,13 @@ namespace IFS_openGL_test.GUI
                 return null;
             }
 
+            err = "";
             return new Matrix(matice, dxyz[0], dxyz[1], dxyz[2], prvd, this.barva);
+        }
+
+        public String getLastError()
+        {
+            return err;
         }
 
         #endregion
