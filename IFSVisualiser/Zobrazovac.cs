@@ -79,16 +79,16 @@ namespace IFS_openGL_test
             Glut.glutMainLoop();
         }
 
-        public void show()
-        {
-            if(!isVisible)
-            {
-                //Glut.glutShowWindow();  
-                Glut.glutSetWindow(winHandler);
-                isVisible = true;
-                Glut.glutMainLoop();
-            }
-        }
+        //public void show()
+        //{
+        //    if(!isVisible)
+        //    {
+        //        //Glut.glutShowWindow();  
+        //        //Glut.glutSetWindow(winHandler);
+        //        //isVisible = true;
+        //        Glut.glutMainLoop();
+        //    }
+        //}
 
         /// <summary>
         /// Metoda zinicializuje renderování
@@ -129,14 +129,16 @@ namespace IFS_openGL_test
         /// </summary>
         private void onClose()
         {
-            Console.WriteLine("Zavírám okno.");
-            if(isVisible)
-            {
-                Console.WriteLine("Pořád zavíram.");
-                isVisible = false;
-                Glut.glutHideWindow();
-                Console.WriteLine("Zavřeno.");
-            }
+
+            Glut.glutHideWindow();
+            isVisible = false;
+            //if(isVisible)
+            //{
+            //    Console.WriteLine("Pořád zavíram.");
+            //    isVisible = false;
+            //    Glut.glutHideWindow();
+            //    Console.WriteLine("Zavřeno.");
+            //}
         }
 
         /// <summary>
@@ -151,6 +153,11 @@ namespace IFS_openGL_test
             Gl.glTranslatef(0f, 0f, -5f);
             Gl.glRotatef(angleX, 0f, 1f, 0f);
             Gl.glRotatef(angleY, 1f, 0f, 0f);
+
+            if(!isVisible)
+            {
+                isVisible = true;
+            }
 
             if(body != null)
             {

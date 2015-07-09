@@ -9,13 +9,15 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using IFS_openGL_test.ifs;
 using System.IO;
+using System.Threading;
 
 namespace IFS_openGL_test.GUI
 {
     public partial class Okno : Form
     {
         //Okno OpenGL
-        Zobrazovac zobrazovac;
+        private Zobrazovac zobrazovac;
+        private bool created = false;
 
         //maximální počet sloupců s maticemi
         private const int MAX_POCET_SLOUPCU_MATIC = 3;
@@ -376,14 +378,31 @@ namespace IFS_openGL_test.GUI
             Bod[] fraktal;
             IFS ifs = new IFS(matice);
             fraktal = ifs.fraktalNahodne3D(POCET_BODU);
-            if(zobrazovac == null)
+
+            //zobrazovac bud nesmi byt jeste vytvoren, nebo musi byt okno zavrene, jinak to padne
+            //problem je v tom, ze po vytvoreni noveho zobrazovace se promenna zobrazovac porad jevi jako null 
+            try
             {
-                zobrazovac = new Zobrazovac(Zobrazovac.DEF_WIDTH, Zobrazovac.DEF_HEIGHT, fraktal);
+                if(zobrazovac == null && !created)
+                {
+                    created = true;
+                    zobrazovac = new Zobrazovac(Zobrazovac.DEF_WIDTH, Zobrazovac.DEF_HEIGHT, fraktal);
+                }
+                else if (!zobrazovac.isVisible)
+                {
+                    zobrazovac.isVisible = true;
+                    zobrazovac = new Zobrazovac(Zobrazovac.DEF_WIDTH, Zobrazovac.DEF_HEIGHT, fraktal);
+                }
+                else
+                {
+                    MessageBox.Show("Jedno zobrazovací okno je již aktivní, před generováním nového fraktálu jej prosím zavřete.",
+                    "Chyba", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
-            else
+            catch (Exception)
             {
-                zobrazovac.setBody(fraktal);
-                zobrazovac.show();
+                MessageBox.Show("Jedno zobrazovací okno je již aktivní, před generováním nového fraktálu jej prosím zavřete.",
+                    "Chyba", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
